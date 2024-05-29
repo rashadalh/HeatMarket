@@ -22,12 +22,12 @@ interface IHeatOption {
     function totalYES() external view returns (uint256);
     function totalNO() external view returns (uint256);
 
-    function betYes(uint256 num_tokens) external;
-    function betNo(uint256 num_tokens) external;
+    function betYes(address _bettor, uint256 num_tokens) external;
+    function betNo(address _bettor, uint256 num_tokens) external;
     function arbitrate(bool winnerIsYES) external;
     function exerciseOption() external;
-    function withdrawPayoutYES() external;
-    function withdrawPayoutNO() external;
+    function withdrawPayoutYES(address _bettor) external;
+    function withdrawPayoutNO(address _bettor) external;
 }
 
 contract heatOption is NoReentrancy, IHeatOption {
@@ -81,7 +81,7 @@ contract heatOption is NoReentrancy, IHeatOption {
         _;
     }
 
-    function betYes(uint256 num_tokens) public noReentrancy {
+    function betYes(address _bettor, uint256 num_tokens) public noReentrancy {
         // check if the option has not been exercised
         require(!exercised, "Option has already been exercised");
 
@@ -95,13 +95,13 @@ contract heatOption is NoReentrancy, IHeatOption {
         Standard_Token(heatToken).transferFrom(msg.sender, address(this), num_tokens);
 
         // update the balance of the sender
-        balancesYES[msg.sender] += num_tokens;
+        balancesYES[_bettor] += num_tokens;
 
-        // update the total amount of HT tokens bet on YES
+        // update the total amount of HT tokens bet on YEaS
         totalYES += num_tokens;
     }
 
-    function betNo(uint256 num_tokens) public noReentrancy {
+    function betNo(address _bettor, uint256 num_tokens) public noReentrancy {
         // check if the option has not been exercised
         require(!exercised, "Option has already been exercised");
 
@@ -115,7 +115,7 @@ contract heatOption is NoReentrancy, IHeatOption {
         Standard_Token(heatToken).transferFrom(msg.sender, address(this), num_tokens);
 
         // update the balance of the sender
-        balancesNO[msg.sender] += num_tokens;
+        balancesNO[_bettor] += num_tokens;
 
         // update the total amount of HT tokens bet on NO
         totalNO += num_tokens;
@@ -155,7 +155,7 @@ contract heatOption is NoReentrancy, IHeatOption {
     }
 
     // function to transfer portion of winnings to the winner calling this function
-    function withdrawPayoutYES noReentrancy() public {
+    function withdrawPayoutYES(address _bettor) onlyOwner noReentrancy public {
         // check if the option has been exercised
         require(exercised, "Option has not been exercised yet");
 
@@ -166,7 +166,7 @@ contract heatOption is NoReentrancy, IHeatOption {
         require(winnerIsYES, "Winner is NO");
 
         // check if the winner is calling this function
-        require(balancesYES[msg.sender] > 0, "You are not the winner");
+        require(balancesYES[_bettor] > 0, "You are not the winner");
 
         // compute winner payout
         // this is the total amount of HT tokens that were bet on NO + the total amount of HT tokens that were bet on YES x the percentage of the total amount of HT tokens that were bet on YES by the winner
@@ -175,11 +175,11 @@ contract heatOption is NoReentrancy, IHeatOption {
         // calculate total YES and NO balances
 
         // compute winner payout
-        uint256 winnerPayout = (totalNO + totalYES) * balancesYES[msg.sender] / totalYES;
+        uint256 winnerPayout = (totalNO + totalYES) * balancesYES[_bettor] / totalYES;
 
         // transfer the payout to the winner
-        balancesYES[msg.sender] = 0;
-        msg.sender.transfer(winnerPayout);
+        balancesYES[_bettor] = 0;
+        IHeatOption(heatToken).transfer(winnerPayout);
 
         // decrese the total amount of HT tokens bet on YES
         if (totalYES > winnerPayout) {
@@ -189,7 +189,7 @@ contract heatOption is NoReentrancy, IHeatOption {
         }
     }
 
-    function withdrawPayoutNO() noReentrancy {
+    function withdrawPayoutNO(address _bettor) noReentrancy {
         // check if the option has been exercised
         require(exercised, "Option has not been exercised yet");
 
@@ -200,7 +200,7 @@ contract heatOption is NoReentrancy, IHeatOption {
         require(!winnerIsYES, "Winner is YES");
 
         // check if the winner is calling this function
-        require(balancesNO[msg.sender] > 0, "You are not the winner");
+        require(balancesNO[_bettor] > 0, "You are not the winner");
 
         // compute winner payout
         // this is the total amount of HT tokens that were bet on YES + the total amount of HT tokens that were bet on NO x the percentage of the total amount of HT tokens that were bet on NO by the winner
@@ -209,11 +209,11 @@ contract heatOption is NoReentrancy, IHeatOption {
         // calculate total YES and NO balances
 
         // compute winner payout
-        uint256 winnerPayout = (totalNO + totalYES) * balancesNO[msg.sender] / totalNO;
+        uint256 winnerPayout = (totalNO + totalYES) * balancesNO[_bettor] / totalNO;
 
         // transfer the payout to the winner
-        balancesNO[msg.sender] = 0;
-        msg.sender.transfer(winnerPayout);
+        balancesNO[_bettor] = 0;
+        IHeatOption(heatToken).transfer(winnerPayout);
 
         // decrese the total amount of HT tokens bet on NO
         if (totalNO > winnerPayout) {
