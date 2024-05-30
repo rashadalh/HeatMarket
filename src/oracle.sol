@@ -24,4 +24,10 @@ contract oracle is Ioracle {
     function getTemperature() public view returns (uint256) {
         return temperature;
     }
+
+    // constructor
+    constructor(uint256 _init_temp) public {
+        owner = msg.sender;
+        temperature = _init_temp;
+    }
 }

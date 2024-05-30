@@ -8,13 +8,35 @@ import { NoReentrancy } from "./noReentrancy.sol";
 
 import { Token } from "./erc20.sol";
 
-// Prediction Marketplace for Heat Options....
+interface IMarket {
+    function owner() external view returns (address);
+    function heatToken() external view returns (address);
+    function heatOracle() external view returns (address);
+    function heatOptions(address _owner) external view returns (address);
 
-contract market is NoReentrancy {
+    function deployHeatOption(address _owner, address _arbitrator, address _heatOracle, address _expiryBlock, address _strikePrice) external;
+    function betYesOnHeatOption(address _optionAddress, uint256 num_tokens) external;
+    function betNoOnHeatOption(address _optionAddress, uint256 num_tokens) external;
+    function arbitrateHeatOption(address _optionAddress, bool winnerIsYES) external;
+    function exerciseHeatOption(address _optionAddress) external;
+    function withdrawPayoutYES(address _optionAddress) external;
+    function withdrawPayoutNO(address _optionAddress) external;
+}
+
+
+// Prediction Marketplace for Heat Options....
+contract market is IMarket, NoReentrancy {
     address public owner;
     address public heatToken;
+    address public heatOracle;
 
     mapping(address => address) public heatOptions;
+
+    constructor(address _heatToken, address _heatOracle) public {
+        owner = msg.sender;
+        heatToken = _heatToken;
+        heatOracle = _heatOracle;
+    }
 
     modifier onlyOwner() {
         require(msg.sender == owner, "Only owner can call this function");
