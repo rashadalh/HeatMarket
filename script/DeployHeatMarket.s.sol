@@ -5,8 +5,7 @@ import "forge-std/Script.sol";
 import "../src/erc20.sol";
 import { oracle } from "../src/oracle.sol";
 import { market } from "../src/marketplace.sol";
-import { Imarket } from "../src/marketplace.sol";
-dotenv.config({ path: '.env' });
+import { IMarket } from "../src/marketplace.sol";
 
 contract DeployHeatToken is Script {
     function run() external {
@@ -35,14 +34,13 @@ contract DeployHeatToken is Script {
         uint256 expiryBlock = block.number + 3600;
 
         // let's deploy a heat option to start
-        Imarket(marketAddr).deployHeatOption(
+        IMarket(marketAddr).deployHeatOption(
             msg.sender,  // owner of the option
             oracleAddress,  // arbitrator
             oracleAddress,  // oracle
             expiryBlock,  // current block + 100
             initialTemperature  // strike price
         );
-
 
         vm.stopBroadcast();
     }

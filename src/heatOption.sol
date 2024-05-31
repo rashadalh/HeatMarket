@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.5.0 <0.8.0;
+pragma solidity ^0.8.0;
 
 import {NoReentrancy} from "./noReentrancy.sol";
+import {Token} from "./erc20.sol";
 // heat option solidity contract.
 
 interface IHeatOption {
@@ -14,7 +15,6 @@ interface IHeatOption {
     function arbitrationPeriod() external view returns (uint256);
     function exercised() external view returns (bool);
     function arbitrationPeriodFinished() external view returns (bool);
-    function winnerIsYES() external view returns (bool);
 
     function balancesYES(address account) external view returns (uint256);
     function balancesNO(address account) external view returns (uint256);
@@ -89,10 +89,10 @@ contract heatOption is NoReentrancy, IHeatOption {
         require(block.number < expiryBlock, "Option has expired");
 
         // check if the sender has enough HT tokens
-        require(Standard_Token(heatToken).balanceOf(msg.sender) >= num_tokens, "Not enough HT tokens");
+        require(Token(heatToken).balanceOf(msg.sender) >= num_tokens, "Not enough HT tokens");
 
         // transfer the HT tokens to this contract
-        Standard_Token(heatToken).transferFrom(msg.sender, address(this), num_tokens);
+        Token(heatToken).transferFrom(msg.sender, address(this), num_tokens);
 
         // update the balance of the sender
         balancesYES[_bettor] += num_tokens;
@@ -109,10 +109,10 @@ contract heatOption is NoReentrancy, IHeatOption {
         require(block.number < expiryBlock, "Option has expired");
 
         // check if the sender has enough HT tokens
-        require(Standard_Token(heatToken).balanceOf(msg.sender) >= num_tokens, "Not enough HT tokens");
+        require(Token(heatToken).balanceOf(msg.sender) >= num_tokens, "Not enough HT tokens");
 
         // transfer the HT tokens to this contract
-        Standard_Token(heatToken).transferFrom(msg.sender, address(this), num_tokens);
+        Token(heatToken).transferFrom(msg.sender, address(this), num_tokens);
 
         // update the balance of the sender
         balancesNO[_bettor] += num_tokens;
@@ -189,7 +189,7 @@ contract heatOption is NoReentrancy, IHeatOption {
         }
     }
 
-    function withdrawPayoutNO(address _bettor) noReentrancy {
+    function withdrawPayoutNO(address _bettor) public noReentrancy {
         // check if the option has been exercised
         require(exercised, "Option has not been exercised yet");
 

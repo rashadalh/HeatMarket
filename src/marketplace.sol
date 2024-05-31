@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.5.0 <0.8.0;
+pragma solidity ^0.8.0;
 
 
-import { IhHeatOption } from "./heatOption.sol";
+import { IHeatOption } from "./heatOption.sol";
 import { heatOption } from "./heatOption.sol";
 import { NoReentrancy } from "./noReentrancy.sol";
 
@@ -48,26 +48,26 @@ contract market is IMarket, NoReentrancy {
     }
 
     function betYesOnHeatOption(address _optionAddress, uint256 num_tokens) public noReentrancy {
-        IhHeatOption(heatOptions[_optionAddress]).betYes(msg.sender, num_tokens);
+        IHeatOption(heatOptions[_optionAddress]).betYes(msg.sender, num_tokens);
     }
 
     function betNoOnHeatOption(address _optionAddress, uint256 num_tokens) public noReentrancy {
-        IhHeatOption(heatOptions[_optionAddress]).betNo(msg.sender, num_tokens);
+        IHeatOption(heatOptions[_optionAddress]).betNo(msg.sender, num_tokens);
     }
 
     function arbitrateHeatOption(address _optionAddress, bool winnerIsYES) public noReentrancy {
-        IhHeatOption(heatOptions[_optionAddress]).arbitrate(winnerIsYES);
+        IHeatOption(heatOptions[_optionAddress]).arbitrate(winnerIsYES);
     }
 
     function exerciseHeatOption(address _optionAddress) public noReentrancy onlyOwner {
-        IhHeatOption(heatOptions[_optionAddress]).exerciseOption();
+        IHeatOption(heatOptions[_optionAddress]).exerciseOption();
     }
 
     function withdrawPayoutYES(address _optionAddress) public noReentrancy {
-        IhHeatOption(heatOptions[_optionAddress]).withdrawPayoutYES(msg.sender);
+        IHeatOption(heatOptions[_optionAddress]).withdrawPayoutYES(msg.sender);
     }
 
     function withdrawPayoutNO(address _optionAddress) public noReentrancy {
-        IhHeatOption(heatOptions[_optionAddress]).withdrawPayoutNO(msg.sender);
+        IHeatOption(heatOptions[_optionAddress]).withdrawPayoutNO(msg.sender);
     }
 }
