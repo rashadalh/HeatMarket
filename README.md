@@ -1,6 +1,6 @@
 Hi there! For our Consensus easyA hackathon project, we are building a prediction market for the weather available on the EVM Bitcoin chain Rootstock. In particular, we are focused on a prediction market for the Heat. Thermal efficiency is a billion dollar issue in the energy sector, after a certain heat, the plant lose exponentially in efficiency. Weather company weight their prediction and monetize them, enregy companies hedge with pricing insurance options.
 
-Traders can bet if it will be above or below a particular temperature. Bets are simple "Will the high temperature tomorrow in [X] be above or below 65 degrees?", and trader's can buy or sell YES or NO. 
+Traders can bet if it will be above or below a particular temperature. Bets are simple "Will the high temperature tomorrow in [X] be above or below [Y] degrees?", and trader's can buy or sell YES or NO. 
 
 To price the odds, we simply state that the price of YES is the ratio of YES VOTES / (YES VOTES + NO VOTES). Thus as more people buy yes, this increases the number of votes on YES. The odds of winning are implied by the market as YES VOTES / (YES VOTES + NO VOTES).
 
