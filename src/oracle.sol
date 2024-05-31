@@ -17,16 +17,16 @@ contract oracle is Ioracle {
         _;
     }
 
-    function setTemperature(uint256 _temperature) public onlyOwner() {
+    function setTemperature(uint256 _temperature) external override onlyOwner() {
         temperature = _temperature;
     }
 
-    function getTemperature() public view returns (uint256) {
+    function getTemperature() external view override returns (uint256) {
         return temperature;
     }
 
     // constructor
-    constructor(uint256 _init_temp) public {
+    constructor(uint256 _init_temp) {
         owner = msg.sender;
         temperature = _init_temp;
     }

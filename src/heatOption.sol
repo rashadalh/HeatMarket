@@ -4,24 +4,9 @@ pragma solidity ^0.8.0;
 import {NoReentrancy} from "./noReentrancy.sol";
 import {Token} from "./erc20.sol";
 // heat option solidity contract.
+import {Ioracle} from "./oracle.sol";
 
 interface IHeatOption {
-    function heatToken() external view returns (address);
-    function owner() external view returns (address);
-    function heatOracle() external view returns (address);
-    function arbitrator() external view returns (address);
-    function expiryBlock() external view returns (uint256);
-    function strikePrice() external view returns (uint256);
-    function arbitrationPeriod() external view returns (uint256);
-    function exercised() external view returns (bool);
-    function arbitrationPeriodFinished() external view returns (bool);
-
-    function balancesYES(address account) external view returns (uint256);
-    function balancesNO(address account) external view returns (uint256);
-
-    function totalYES() external view returns (uint256);
-    function totalNO() external view returns (uint256);
-
     function betYes(address _bettor, uint256 num_tokens) external;
     function betNo(address _bettor, uint256 num_tokens) external;
     function arbitrate(bool winnerIsYES) external;
@@ -35,7 +20,7 @@ contract heatOption is NoReentrancy, IHeatOption {
     address public owner; // address of the owner of the option
     address public heatOracle; // address of the oracle that will provide the price of the asset
     address public arbitrator; // address of the arbitrator that will resolve disputes
-    address public expiryBlock; // block number when the option expires
+    uint256 public expiryBlock; // block number when the option expires
     uint256 public strikePrice; // price at which the option can be exercised
     uint256 public arbitrationPeriod; // number of blocks after expiry when the option can be disputed
     bool public exercised; // flag to check if the option has been exercised
@@ -51,7 +36,7 @@ contract heatOption is NoReentrancy, IHeatOption {
     uint256 public totalNO; // total amount of HT tokens bet on NO
 
 
-    constructor (address _heatToken, address _owner, address _arbitrator, address _heatOracle, address _expiryBlock, address _strikePrice) public {
+    constructor (address _heatToken, address _owner, address _arbitrator, address _heatOracle, uint256 _expiryBlock, uint256 _strikePrice) {
         heatToken = _heatToken;
         owner = _owner;
         arbitrator = _arbitrator;
@@ -81,7 +66,7 @@ contract heatOption is NoReentrancy, IHeatOption {
         _;
     }
 
-    function betYes(address _bettor, uint256 num_tokens) public noReentrancy {
+    function betYes(address _bettor, uint256 num_tokens) public override noReentrancy {
         // check if the option has not been exercised
         require(!exercised, "Option has already been exercised");
 
@@ -101,7 +86,7 @@ contract heatOption is NoReentrancy, IHeatOption {
         totalYES += num_tokens;
     }
 
-    function betNo(address _bettor, uint256 num_tokens) public noReentrancy {
+    function betNo(address _bettor, uint256 num_tokens) public override  noReentrancy {
         // check if the option has not been exercised
         require(!exercised, "Option has already been exercised");
 
@@ -123,7 +108,7 @@ contract heatOption is NoReentrancy, IHeatOption {
 
     // arbitrator can arbitrate the option only during the arbitration period
     // even if the option has already been exercised
-    function arbitrate(bool _winnerIsYES) public onlyArbitrator noReentrancy {
+    function arbitrate(bool _winnerIsYES) public override onlyArbitrator noReentrancy {
         // check if the option has expired
         require(block.number > expiryBlock, "Option has not expired yet");
 
@@ -137,7 +122,7 @@ contract heatOption is NoReentrancy, IHeatOption {
         exercised = true;
     }
 
-    function exerciseOption() public noReentrancy {
+    function exerciseOption() public override noReentrancy {
         // check if option is not yet expired
         require(!exercised, "Option has already been exercised");
         
@@ -149,13 +134,13 @@ contract heatOption is NoReentrancy, IHeatOption {
 
 
         // Check if YES Won (price of the asset is greater than the strike price)
-        if (heatOracle.getPrice() > strikePrice) {
+        if (Ioracle(heatOracle).getTemperature() > strikePrice) {
             winnerIsYES = true;
         }
     }
 
     // function to transfer portion of winnings to the winner calling this function
-    function withdrawPayoutYES(address _bettor) onlyOwner noReentrancy public {
+    function withdrawPayoutYES(address _bettor) onlyOwner noReentrancy public override {
         // check if the option has been exercised
         require(exercised, "Option has not been exercised yet");
 
@@ -179,7 +164,7 @@ contract heatOption is NoReentrancy, IHeatOption {
 
         // transfer the payout to the winner
         balancesYES[_bettor] = 0;
-        IHeatOption(heatToken).transfer(winnerPayout);
+        Token(heatToken).transfer(_bettor, winnerPayout);
 
         // decrese the total amount of HT tokens bet on YES
         if (totalYES > winnerPayout) {
@@ -189,7 +174,7 @@ contract heatOption is NoReentrancy, IHeatOption {
         }
     }
 
-    function withdrawPayoutNO(address _bettor) public noReentrancy {
+    function withdrawPayoutNO(address _bettor) public override noReentrancy {
         // check if the option has been exercised
         require(exercised, "Option has not been exercised yet");
 
@@ -213,7 +198,7 @@ contract heatOption is NoReentrancy, IHeatOption {
 
         // transfer the payout to the winner
         balancesNO[_bettor] = 0;
-        IHeatOption(heatToken).transfer(winnerPayout);
+        Token(heatToken).transfer(_bettor, winnerPayout);
 
         // decrese the total amount of HT tokens bet on NO
         if (totalNO > winnerPayout) {
