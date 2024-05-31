@@ -9,10 +9,10 @@ import { oracle } from "../src/oracle.sol";
 import { market } from "../src/marketplace.sol";
 import { IMarket } from "../src/marketplace.sol";
 
-contract DeployHeatToken is Script {
+contract DeployHeatMarket is Script {
     function run() external {
         // load private key from dotenv
-        uint256 deployerPrivateKey = vm.envUint("REPLACE WITH PRIVATE KEY");
+        uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(deployerPrivateKey);
 
         // First step is to deploy the oracle contract

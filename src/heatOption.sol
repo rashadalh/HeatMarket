@@ -22,7 +22,7 @@ contract heatOption is NoReentrancy, IHeatOption {
     address public arbitrator; // address of the arbitrator that will resolve disputes
     uint256 public expiryBlock; // block number when the option expires
     uint256 public strikePrice; // price at which the option can be exercised
-    uint256 public arbitrationPeriod; // number of blocks after expiry when the option can be disputed
+    uint256 public arbitrationPeriod = 18000; // number of blocks after expiry when the option can be disputed
     bool public exercised; // flag to check if the option has been exercised
     bool public arbitrationPeriodFinished; // flag to check if the arbitration period has finished
 
