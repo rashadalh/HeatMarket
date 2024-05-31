@@ -71,10 +71,18 @@ $ forge snapshot
 $ anvil
 ```
 
+### Make .env for rootstock
+Be sure to make a `.env` file in the root directory with the following fields to deploy to rootstock
+```shell
+PRIVATE_KEY=YOUR_PRIVATE_KEY_HERE
+RPC_URL=https://public-node.testnet.rsk.co
+ETHERSCAN_API_KEY=https://explorer.testnet.rsk.co
+```
+
 ### Deploy
 
 ```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
+$ source .env && forge script script/DeployHeatMarket.s.sol:DeployHeatMarket --broadcast --rpc-url $RPC_URL
 ```
 
 ### Cast
