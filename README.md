@@ -1,4 +1,4 @@
-Hi there! For our Consensus easyA hackathon project, we are building a prediction market for the weather available on the EVM chain Rootstock. In particular, we are focused on a prediction market for the Heat. Thermal efficiency is a billion dollar issue in the energy sector, after a certain heat, the plant lose expontenially in efficiency. Weather company weight their prediction and monetize them, enregy company hedge with pricing insurance options.
+Hi there! For our Consensus easyA hackathon project, we are building a prediction market for the weather available on the EVM Bitcoin chain Rootstock. In particular, we are focused on a prediction market for the Heat. Thermal efficiency is a billion dollar issue in the energy sector, after a certain heat, the plant lose expontenially in efficiency. Weather company weight their prediction and monetize them, enregy company hedge with pricing insurance options.
 
 Traders can bet wheather it will be above or below a particular temperature. Bet's are simple "Will the high temperature tomorrow in [X] be above or below 65 degrees?", and trader's can buy or sell YES or NO. 
 
