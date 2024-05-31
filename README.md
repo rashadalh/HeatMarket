@@ -1,4 +1,6 @@
-Hi there! For our easyA hackathon project, we are building a prediction market for the weather. In particular, we are focused on a prediction market for the weather. Traders can bet wheather it will be above or below a particular temperature. Bet's are simple "Will the high temperature tomorrow in [X] be above or below 65 degrees?", and trader's can buy or sell YES or NO.
+Hi there! For our Consensus easyA hackathon project, we are building a prediction market for the weather available on the EVM chain Rootstock. In particular, we are focused on a prediction market for the Heat. Thermal efficiency is a billion dollar issue in the energy sector, after a certain heat, the plant lose expontenially in efficiency. Weather company weight their prediction and monetize them, enregy company hedge with pricing insurance options.
+
+Traders can bet wheather it will be above or below a particular temperature. Bet's are simple "Will the high temperature tomorrow in [X] be above or below 65 degrees?", and trader's can buy or sell YES or NO. 
 
 To price the odds, we simply state that the price of YES is the ratio of YES VOTES / (YES VOTES + NO VOTES). Thus as more people buy yes, this increases the number of votes on YES. The odds of winning are implied by the market as YES VOTES / (YES VOTES + NO VOTES).
 
@@ -8,7 +10,19 @@ At the finalization, there is a 24 hour dispute window from which an arbitrator 
 
 If no sucessful challenge is made, the full amount of heat tokens is allocated to the winners. You share of heat tokens is equal to You Votes on Winning Side x (Yes votes + No Votes) / (Votes on Winning Side)
 
-You can then re-invest your heat tokens into new markets!
+You can then re-invest your $HEAT tokens into new markets!
+
+#Links
+Presentation Deck: https://www.canva.com/design/DAGGvPlMkoY/2f95gQoNssPD1LP7xlAnsg/edit?utm_content=DAGGvPlMkoY&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
+
+Twitter: https://x.com/HeatMarketRSK
+
+Architecture: https://excalidraw.com/#json=6cE8DjWAZr4fvqCNrmhGH,KGKAuPZ4xPoaVou7wSw9Bg
+
+# Founder
+Rashad: https://x.com/rashad0101
+Julesfoa.eth: https://x.com/JulesFoa
+
 
 ## Foundry
 
